@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messenger</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--    <link href="/main.css" rel="stylesheet">-->
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<h1>Welcome</h1>
+<h3 th:text="${#temporals.createToday()}"></h3>
+<div id="allMessagesDiv">
+    <div  th:each="message : ${allMessages}">
+        <span th:text="' '+${message.getCreatedAt()}"></span>
+<!--        <span th:style="'color:'+${message.getUser().getColorCode()}" th:text="${message.getUser().getUsername()}"></span>-->
+        <span th:text="' '+${message.content}"></span>
+    </div>
+</div>
+<form>
+    <label for="newMessageInput">Message:</label>
+    <input id="newMessageInput" type="text">
+    <input hidden type="text" th:value="${username}">
+    <button type="submit" id="sendMessage">Send</button>
+</form>
+</body>
+</html>
