@@ -7,6 +7,8 @@ import org.springframework.web.context.annotation.SessionScope;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 @Service
 @SessionScope
 @Data
@@ -16,13 +18,16 @@ public class UsernameService {
     private static int lastGeneratedIndex = 0;
 
     private static String[] names = {"cat", "dog"};
-    private final String username;
+    private String username = null;
 
-    public UsernameService() {
-        this.username = generateUsername();
+    public String getUsername() {
+        if (isNull(username)){
+            username = generateUsername();
+        }
+        return username;
     }
 
-    public String generateUsername() {
+    private String generateUsername() {
         if (availableNames.size() == 0){
             lastGeneratedIndex++;
             availableNames.addAll(

@@ -14,22 +14,17 @@ import java.util.List;
 @Transactional
 public class MessageService {
     private final List<Message> allMessages = new ArrayList<>();
-    private final UsernameService usernameService;
 
-    public MessageService(UsernameService usernameService) {
-        this.usernameService = usernameService;
+    public void postPublicMessage(final SendMessageDto dto) {
+        allMessages.add(new Message(new User(dto.getUsername()), dto.getContent(), LocalDateTime.now()));
     }
 
-    public void postPublicMessage(final SendMessageDto dto){
-        allMessages.add(new Message(new User("cat"), dto.getContent(), LocalDateTime.now()));
-    }
     public Message save(SendMessageDto messageDto) throws InterruptedException {
-        System.out.println("messageDto = " + messageDto.getContent());
         postPublicMessage(messageDto);
         Thread.sleep(1000);
         final List<Message> messages = getAllMessages();
-        System.out.println(messages.get(messages.size()-1));
-        return messages.get(messages.size()-1);
+        System.out.println(messages.get(messages.size() - 1));
+        return messages.get(messages.size() - 1);
     }
 
     public List<Message> getAllMessages() {

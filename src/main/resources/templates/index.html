@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>Messenger</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <!--    <link href="/main.css" rel="stylesheet">-->
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
+    <link href="/app.css" rel="stylesheet">
 </head>
 <body>
 <h1>Welcome</h1>
@@ -16,14 +16,14 @@
 <div id="allMessagesDiv">
     <div  th:each="message : ${allMessages}">
         <span th:text="' '+${message.getCreatedAt()}"></span>
-<!--        <span th:style="'color:'+${message.getUser().getColorCode()}" th:text="${message.getUser().getUsername()}"></span>-->
-        <span th:text="' '+${message.content}"></span>
+        <span th:style="'color:'+${message.getUser().getColorCode()}" th:text="${message.getUser().getUsername()}"></span>
+        <span th:text="' '+${message.content}"></span><br/>
     </div>
 </div>
 <form>
     <label for="newMessageInput">Message:</label>
-    <input id="newMessageInput" type="text">
-    <input hidden type="text" th:value="${username}">
+    <input id="newMessageInput" type="text" >
+    <input id="usernameInput" hidden type="text" th:value="${username}">
     <button type="submit" id="sendMessage">Send</button>
 </form>
 </body>

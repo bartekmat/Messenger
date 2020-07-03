@@ -26,15 +26,9 @@ public class FrontendController {
     public String showIndex(final Model model) {
         model.addAttribute("newMessage", new SendMessageDto());
         model.addAttribute("allMessages", messageService.getAllMessages());
-        model.addAttribute("username", "cat");
-        System.out.println("messageService = " + messageService.getAllMessages().size());
+        final String username = usernameService.getUsername();
+        model.addAttribute("username", username );
+        System.out.println("username = " + username);
         return "index";
     }
-//
-//    @PostMapping
-//    public String processPost(final @ModelAttribute SendMessageDto messageDto) {
-//        messageService.postPublicMessage(messageDto);
-//        log.info("message received " + messageDto.getContent());
-//        return "redirect:/";
-//    }
 }

@@ -18,7 +18,8 @@ public class MessageController {
 
     @MessageMapping("/publishMessage")
     @SendTo("/topic/allMessages")
-    public Message greeting(SendMessageDto messageDto) throws InterruptedException {
+    public Message publishMessage(SendMessageDto messageDto) throws InterruptedException {
+        System.out.println("messageDto = " + messageDto);
         return messageService.save(messageDto);
     }
 }
