@@ -1,26 +1,29 @@
 package com.gruzini.messenger.config;
 
-import lombok.RequiredArgsConstructor;
+import com.gruzini.messenger.services.PresenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-@RequiredArgsConstructor
 @Component
 @Slf4j
 public class PresenceEventListener {
 
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final PresenceService presenceService;
+
+    public PresenceEventListener(PresenceService presenceService) {
+        this.presenceService = presenceService;
+    }
 
     @EventListener
-    private void handleSessionConnected(SessionConnectEvent event) {
+    private void handleSessionConnected(SessionConnectEvent event) throws InterruptedException {
         final SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String sessionId = headers.getSessionId();
         log.info("Connected! user with sessionId : " + sessionId);
+        presenceService.userLoggedIn(sessionId);
     }
 
     @EventListener
@@ -28,5 +31,6 @@ public class PresenceEventListener {
         final SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String sessionId = headers.getSessionId();
         log.info("Disconnected! user with sessionId : " + sessionId);
+        presenceService.userLoggedOut(sessionId);
     }
 }

@@ -8,6 +8,9 @@ function connect() {
         stompClient.subscribe('/topic/allMessages', function (msg) {
             showNewMessage(JSON.parse(msg.body));
         });
+        stompClient.subscribe('/topic/allLogins', function (msg) {
+            handleUsersActivity(JSON.parse(msg.body));
+        });
     });
 }
 
@@ -27,8 +30,7 @@ function sendMessage() {
 
     stompClient.send("/app/publishMessage", {}, JSON.stringify(
         {
-            'content': content,
-            'username': username
+            'content': content
         }
         ));
 }
@@ -55,6 +57,10 @@ function showNewMessage(message) {
     allMessagesDiv.stop().animate({
         scrollTop: allMessagesDiv[0].scrollHeight
     }, 500);
+}
+
+function handleUsersActivity(message){
+    console.log(message)
 }
 
 $(function () {

@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendMessageDto {
     private String content;
-    private String username;
 }

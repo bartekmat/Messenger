@@ -2,7 +2,6 @@ package com.gruzini.messenger.services;
 
 import com.gruzini.messenger.dto.SendMessageDto;
 import com.gruzini.messenger.models.Message;
-import com.gruzini.messenger.models.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,13 +13,20 @@ import java.util.List;
 @Transactional
 public class MessageService {
     private final List<Message> allMessages = new ArrayList<>();
+    private final PresenceService presenceService;
 
-    public void postPublicMessage(final SendMessageDto dto) {
-        allMessages.add(new Message(new User(dto.getUsername()), dto.getContent(), LocalDateTime.now()));
+    public MessageService(PresenceService presenceService) {
+        this.presenceService = presenceService;
     }
 
-    public Message save(SendMessageDto messageDto) throws InterruptedException {
-        postPublicMessage(messageDto);
+    public Message postPublicMessage(final SendMessageDto dto, final String sessionId) {
+        final Message message = new Message(presenceService.getUser(sessionId), dto.getContent(), LocalDateTime.now());
+        allMessages.add(message);
+        return message;
+    }
+
+    public Message save(SendMessageDto messageDto, String sessionId) throws InterruptedException {
+        postPublicMessage(messageDto, sessionId);
         Thread.sleep(1000);
         final List<Message> messages = getAllMessages();
         System.out.println(messages.get(messages.size() - 1));
