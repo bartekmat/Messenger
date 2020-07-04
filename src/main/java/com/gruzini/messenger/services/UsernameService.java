@@ -17,7 +17,7 @@ public class UsernameService {
     private static List<String> availableNames = new LinkedList<>();
     private static int lastGeneratedIndex = 0;
 
-    private static String[] names = {"cat", "dog"};
+    private static String[] names = {"Dog", "Cat"};
     private String username = null;
 
     public String getUsername() {
