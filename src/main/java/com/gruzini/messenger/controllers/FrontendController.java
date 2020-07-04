@@ -26,9 +26,7 @@ public class FrontendController {
     public String showIndex(final Model model) {
         model.addAttribute("newMessage", new SendMessageDto());
         model.addAttribute("allMessages", messageService.getAllMessages());
-        final String username = usernameService.getUsername();
-        model.addAttribute("username", username );
-        System.out.println("username = " + username);
+        model.addAttribute("username", usernameService.getUsername() );
         return "index";
     }
 }

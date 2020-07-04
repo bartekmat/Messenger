@@ -78,9 +78,9 @@
                                 <div class="img_cont_msg">
                                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img_msg">
                                 </div>
-                                <div class="msg_cotainer" th:text="${message.content}">
-
-                                    <span class="msg_time" th:text="${message.createdAt}"></span>
+                                <div class="msg_cotainer">
+                                    <div th:text="${message.content}"></div>
+                                    <span class="msg_time" th:text="${message.createdAt}">8:57 AM, Today</span>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                             <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                         </div>
                         <form>
-                            <input id="newMessageInput" type="text" class="form-control type_msg" placeholder="Type your message..." style="width: 770px">
+                            <input id="newMessageInput" type="text" class="form-control type_msg" placeholder="Type your message..." style="width: 700px">
                             <input id="usernameInput" hidden type="text" th:value="${username}">
                             <button type="submit" id="sendMessage" hidden></button>
                         </form>
