@@ -27,7 +27,7 @@ public class PresenceEventListener {
     }
 
     @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+    private void handleSessionDisconnect(SessionDisconnectEvent event) throws InterruptedException {
         final SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         final String sessionId = headers.getSessionId();
         log.info("Disconnected! user with sessionId : " + sessionId);

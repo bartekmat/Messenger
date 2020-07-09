@@ -18,7 +18,9 @@ public class PresenceService {
 
     public void userLoggedIn(final String sessionId) throws InterruptedException {
         final String generatedUsername = usernameService.generateUsername();
-        final User addedUser = activeUsers.put(sessionId, new User(generatedUsername, sessionId));
+        final User addedUser = new User(generatedUsername, sessionId);
+        System.out.println("addedUser = " + addedUser);
+        activeUsers.put(sessionId, addedUser);
         presenceController.publishLoginInfo(addedUser);
     }
 

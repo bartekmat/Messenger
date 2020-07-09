@@ -15,5 +15,5 @@ public class PresenceEventDto {
 
     private String username;
     private String colorCode;
-    private PresenceEventType presenceEventType;
+    private PresenceEventType type;
 }

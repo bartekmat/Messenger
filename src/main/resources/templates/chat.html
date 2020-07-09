@@ -27,18 +27,19 @@
             </div>
             <div class="card-body contacts_body">
                 <ui class="contacts">
-                    <li th:each="user : ${activeUsers}" class="active">
-                        <div class="d-flex bd-highlight">
-                            <div class="img_cont">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img">
-                                <span class="online_icon"></span>
-                            </div>
-                            <div class="user_info">
-                                <span th:text="${user.username}"></span>
-                                <p>is online</p>
-                            </div>
-                        </div>
-                    </li>
+                    <div id="#allActiveUsers"></div>
+<!--                    <li th:each="user : ${activeUsers}" class="active">-->
+<!--                        <div class="d-flex bd-highlight">-->
+<!--                            <div class="img_cont">-->
+<!--                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img">-->
+<!--                                <span class="online_icon"></span>-->
+<!--                            </div>-->
+<!--                            <div class="user_info">-->
+<!--                                <span th:text="${user.username}"></span>-->
+<!--                                <p>is online</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </li>-->
                 </ui>
             </div>
             <div class="card-footer"></div>

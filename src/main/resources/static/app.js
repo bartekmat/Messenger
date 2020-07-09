@@ -60,7 +60,53 @@ function showNewMessage(message) {
 }
 
 function handleUsersActivity(message){
-    console.log(message)
+
+    console.log('message '+message);
+    // message.type.localeCompare("LOGGED_IN")
+    if (true){
+        console.log("was true, should be appended")
+        let li =  document.createElement("li");
+        li.classList.add("active");
+
+        let flexDiv = document.createElement("div");
+        flexDiv.classList.add("d-flex");
+        flexDiv.classList.add("cd-highlight");
+
+        let imgContDiv = document.createElement("div");
+        imgContDiv.classList.add("img_cont");
+
+        let img = document.createElement("img");
+        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU";
+        img.classList.add("rounded-circle");
+        img.classList.add("user_img");
+
+        let onlineIconSpan = document.createElement("span");
+        onlineIconSpan.classList.add("online_icon");
+
+        let userInfoDiv = document.createElement("div");
+        userInfoDiv.classList.add("user_info")
+
+        let span = document.createElement("span");
+        span.textContent = message.username;
+
+        let p = document.createElement("p");
+        p.textContent = "is online";
+
+        userInfoDiv.appendChild(span);
+        userInfoDiv.appendChild(p);
+
+        imgContDiv.appendChild(img);
+        imgContDiv.appendChild(onlineIconSpan);
+
+        flexDiv.appendChild(imgContDiv);
+        flexDiv.appendChild(userInfoDiv);
+
+        li.appendChild(flexDiv);
+        let allActiveUsersDiv = document.getElementById('#allActiveUsers');
+        allActiveUsersDiv.appendChild(li);
+    }
+    console.log("end")
+
 }
 
 $(function () {
