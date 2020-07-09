@@ -16,6 +16,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(a -> a
                     .antMatchers("/**").permitAll()
                     .anyRequest().authenticated())
-                .oauth2Login();
+                .oauth2Login().defaultSuccessUrl("/chat", true);
     }
 }

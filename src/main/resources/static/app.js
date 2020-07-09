@@ -11,6 +11,9 @@ function connect() {
         stompClient.subscribe('/topic/allLogins', function (msg) {
             handleUsersActivity(JSON.parse(msg.body));
         });
+        stompClient.subscribe('/user/topic/privateMessages', function (msg) {
+            showNewMessage(JSON.parse(msg.body));
+        });
     });
 }
 
@@ -22,17 +25,22 @@ function disconnect() {
 }
 
 function sendMessage() {
-    let content = $("#newMessageInput").val();
-    let username = $("#usernameInput").val();
-
-    console.log(content);
-    console.log("username"+username);
-
-    stompClient.send("/app/publishMessage", {}, JSON.stringify(
-        {
-            'content': content
-        }
+    let newMessageInput = $("#newMessageInput");
+    if (directMessagesRecipient == null) {
+        stompClient.send("/app/publishPublicMessage", {}, JSON.stringify(
+            {
+                'content': newMessageInput.val(),
+            }
         ));
+    } else {
+        stompClient.send("/app/publishPrivateMessage", {}, JSON.stringify(
+            {
+                'content': newMessageInput.val(),
+                'recipient': directMessagesRecipient
+            }
+        ));
+    }
+    newMessageInput.val('');
 }
 
 function showNewMessage(message) {
@@ -40,16 +48,48 @@ function showNewMessage(message) {
     let timestampSpan = document.createElement('span');
     timestampSpan.textContent = message.createdAt + ' ';
 
-    let userSpan = document.createElement('span');
-    userSpan.textContent = message.user.username + ' ';
-    userSpan.style = 'color: ' + message.user.colorCode + ';';
+    let senderSpan = document.createElement('span');
+    senderSpan.textContent = message.sender.name + ' ';
+    senderSpan.style = 'color: ' + message.sender.colorCode + ';';
 
-    let textSpan = document.createElement('span');
-    textSpan.textContent = message.content;
+    let arrowSpan = null;
+    let recipientSpan = null;
+    if (message.recipient != null) {
+        arrowSpan = document.createElement('span');
+        arrowSpan.textContent = '➡';
+
+        recipientSpan = document.createElement('span');
+        recipientSpan.textContent = ' ' + message.recipient.name + ' ';
+        recipientSpan.style = 'color: ' + message.recipient.colorCode + ';';
+    }
+    let textSpan = null;
+    let video = null;
+    if (message.type === "TEXT") {
+        textSpan = document.createElement('span');
+        textSpan.textContent = message.content;
+    } else if (message.type === "GIF") {
+        video = document.createElement('video');
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        let source = document.createElement('source');
+        source.src = message.content;
+        source.type = "video/mp4";
+        video.appendChild(source);
+    }
 
     div.appendChild(timestampSpan);
-    div.appendChild(userSpan);
-    div.appendChild(textSpan);
+    div.appendChild(senderSpan);
+    if (recipientSpan != null) {
+        div.appendChild(arrowSpan);
+        div.appendChild(recipientSpan);
+    }
+    if (textSpan != null) {
+        div.appendChild(textSpan);
+    }
+    if (video != null) {
+        div.appendChild(video);
+    }
 
     let allMessagesDiv = $("#allMessagesDiv");
     allMessagesDiv.append(div);
@@ -59,54 +99,51 @@ function showNewMessage(message) {
     }, 500);
 }
 
-function handleUsersActivity(message){
+function handleUsersActivity(message) {
+    let allActiveUsersDiv = $("#allActiveUsersDiv");
+    if (message.type === "USER_LOGGED_IN") {
+        let userButton = document.createElement('button');
+        userButton.textContent = message.username + ' ';
+        userButton.style = 'color: ' + message.colorCode + ';';
+        userButton.setAttribute("onclick", 'toggleDirectMessageUser(\'' + message.username + '\');');
+        // th:onclick="'toggleDirectMessageUser(\'' + ${user.name} + '\')'"
+        // toggleDirectMessageUser(this.getAttribute('data1'));
 
-    console.log('message '+message);
-    // message.type.localeCompare("LOGGED_IN")
-    if (true){
-        console.log("was true, should be appended")
-        let li =  document.createElement("li");
-        li.classList.add("active");
-
-        let flexDiv = document.createElement("div");
-        flexDiv.classList.add("d-flex");
-        flexDiv.classList.add("cd-highlight");
-
-        let imgContDiv = document.createElement("div");
-        imgContDiv.classList.add("img_cont");
-
-        let img = document.createElement("img");
-        img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU";
-        img.classList.add("rounded-circle");
-        img.classList.add("user_img");
-
-        let onlineIconSpan = document.createElement("span");
-        onlineIconSpan.classList.add("online_icon");
-
-        let userInfoDiv = document.createElement("div");
-        userInfoDiv.classList.add("user_info")
-
-        let span = document.createElement("span");
-        span.textContent = message.username;
-
-        let p = document.createElement("p");
-        p.textContent = "is online";
-
-        userInfoDiv.appendChild(span);
-        userInfoDiv.appendChild(p);
-
-        imgContDiv.appendChild(img);
-        imgContDiv.appendChild(onlineIconSpan);
-
-        flexDiv.appendChild(imgContDiv);
-        flexDiv.appendChild(userInfoDiv);
-
-        li.appendChild(flexDiv);
-        let allActiveUsersDiv = document.getElementById('#allActiveUsers');
-        allActiveUsersDiv.appendChild(li);
+        allActiveUsersDiv.append(userButton);
+    } else if (message.type === "USER_LOGGED_OUT") {
+        let allChildren = allActiveUsersDiv[0].children;
+        for (let i = 0; i < allChildren.length; i++) {
+            let child = allChildren[i];
+            if (child.textContent.trim() === message.username) {
+                allActiveUsersDiv[0].removeChild(child);
+            }
+        }
     }
-    console.log("end")
+}
 
+let directMessagesRecipient = null;
+
+function toggleDirectMessageUser(username) {
+    console.log("Clicked toggleDirectMessageUser for user ", username);
+    let allActiveUsersDiv = $("#allActiveUsersDiv");
+    let allChildren = allActiveUsersDiv[0].children;
+    let buttonClicked = null;
+    for (let i = 0; i < allChildren.length; i++) {
+        let child = allChildren[i];
+        if (child.textContent.trim() === username) {
+            buttonClicked = child;
+        }
+    }
+
+    if (directMessagesRecipient == null) {
+        directMessagesRecipient = username;
+        buttonClicked.style.backgroundColor = 'red';
+        buttonClicked.style.textDecoration = 'underline';
+    } else if (directMessagesRecipient === username) {
+        directMessagesRecipient = null;
+        buttonClicked.style.backgroundColor = '';
+        buttonClicked.style.textDecoration = '';
+    }
 }
 
 $(function () {
@@ -116,7 +153,5 @@ $(function () {
     connect();
     // $( "#connect" ).click(function() { connect(); });
     // $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#sendMessage" ).click(function() {
-        sendMessage();
-    });
+    $( "#sendMessage" ).click(function() { sendMessage(); });
 });

@@ -24,22 +24,23 @@
         <div class="col-md-4 col-xl-3 chat"><div class="card mb-sm-3 mb-md-0 contacts_card">
             <div class="card-header">
                 <span style="color: white">Welcome to SDA Messenger</span>
+                <span style="color: white" th:text="' ' + ${principalName}"></span>
             </div>
             <div class="card-body contacts_body">
                 <ui class="contacts">
                     <div id="#allActiveUsers"></div>
-<!--                    <li th:each="user : ${activeUsers}" class="active">-->
-<!--                        <div class="d-flex bd-highlight">-->
-<!--                            <div class="img_cont">-->
-<!--                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img">-->
-<!--                                <span class="online_icon"></span>-->
-<!--                            </div>-->
-<!--                            <div class="user_info">-->
-<!--                                <span th:text="${user.username}"></span>-->
-<!--                                <p>is online</p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </li>-->
+                    <li th:each="user : ${activeUsers}" class="active">
+                        <div class="d-flex bd-highlight">
+                            <div class="img_cont">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span th:text="${user.username}"></span>
+                                <p>is online</p>
+                            </div>
+                        </div>
+                    </li>
                 </ui>
             </div>
             <div class="card-footer"></div>
@@ -117,7 +118,6 @@
 </div>
 <script>
     function submitButton() {
-        console.log("clicked")
         document.getElementById("sendMessage").click();
     }
 </script>

@@ -13,7 +13,6 @@ public class PresenceController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public User publishLoginInfo(User newUser) throws InterruptedException {
-        System.out.println("newUser = " + newUser);
         simpMessagingTemplate.convertAndSend("/topic/allLogins", new PresenceEventDto(newUser.getUsername(),
                                                                                                 newUser.getColorCode(),
                                                                                                 PresenceEventDto.PresenceEventType.LOGGED_IN));

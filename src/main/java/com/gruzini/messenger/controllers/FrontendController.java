@@ -28,9 +28,11 @@ public class FrontendController {
     }
 
     @GetMapping("/chat")
-    public String showChat(final Model model) {
-        model.addAttribute("newMessage", new SendMessageDto());
-        model.addAttribute("allMessages", messageService.getAllMessages());
+    public String showChat(final Model model, final Principal principal) {
+        model.addAttribute("principalName", principal == null ? "anonymous" : principal.getName());
+        System.out.println("public messages " + messageService.readAllPublicMessages().size());
+        model.addAttribute("allMessages", messageService.readAllPublicMessages());
+        System.out.println("active users " + presenceService.getAllActiveUsers().size());
         model.addAttribute("activeUsers", presenceService.getAllActiveUsers());
         return "chat";
     }

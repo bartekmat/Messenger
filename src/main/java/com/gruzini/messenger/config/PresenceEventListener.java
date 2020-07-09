@@ -19,18 +19,21 @@ public class PresenceEventListener {
     }
 
     @EventListener
-    private void handleSessionConnected(SessionConnectEvent event) throws InterruptedException {
+    public void handleSessionConnected(SessionConnectEvent event) throws InterruptedException {
         final SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        final String sessionId = headers.getSessionId();
-        log.info("Connected! user with sessionId : " + sessionId);
-        presenceService.userLoggedIn(sessionId);
+        /*
+        for anonymous it is sessionId - we create it in UserInterceptor
+        for logged with github - it is login - parsed from oauth json
+         */
+        final String principalName = event.getUser().getName();
+        log.info("Connected! user : " + principalName);
+        presenceService.userLoggedIn(event.getUser());
     }
 
     @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) throws InterruptedException {
-        final SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        final String sessionId = headers.getSessionId();
-        log.info("Disconnected! user with sessionId : " + sessionId);
-        presenceService.userLoggedOut(sessionId);
+    public void handleSessionDisconnect(SessionDisconnectEvent event) throws InterruptedException {
+        final String principalName = event.getUser().getName();
+        log.info("Disconnected! user : " + principalName);
+        presenceService.userLoggedOut(principalName);
     }
 }
