@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.security.Principal;
 
 @Controller
-@RequestMapping("/")
 @Slf4j
 public class FrontendController {
 
@@ -21,9 +21,14 @@ public class FrontendController {
         this.messageService = messageService;
         this.presenceService = presenceService;
     }
+    @GetMapping("/")
+    public String index(final Model model, Principal principal){
+        model.addAttribute("principalName", principal == null ? "anonymous" : principal.getName());
+        return "index";
+    }
 
-    @GetMapping
-    public String showIndex(final Model model) {
+    @GetMapping("/chat")
+    public String showChat(final Model model) {
         model.addAttribute("newMessage", new SendMessageDto());
         model.addAttribute("allMessages", messageService.getAllMessages());
         model.addAttribute("activeUsers", presenceService.getAllActiveUsers());
