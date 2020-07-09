@@ -6,9 +6,11 @@ function connect() {
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/allMessages', function (msg) {
+            console.log('new public message')
             showNewMessage(JSON.parse(msg.body));
         });
         stompClient.subscribe('/topic/allLogins', function (msg) {
+            console.log('new login')
             handleUsersActivity(JSON.parse(msg.body));
         });
         stompClient.subscribe('/user/topic/privateMessages', function (msg) {
@@ -99,22 +101,23 @@ function showNewMessage(message) {
     }, 500);
 }
 
-function handleUsersActivity(message) {
+function handleUsersActivity(event) {
     let allActiveUsersDiv = $("#allActiveUsersDiv");
-    if (message.type === "USER_LOGGED_IN") {
+    if (true) {
+        console.log('should append');
         let userButton = document.createElement('button');
-        userButton.textContent = message.username + ' ';
-        userButton.style = 'color: ' + message.colorCode + ';';
-        userButton.setAttribute("onclick", 'toggleDirectMessageUser(\'' + message.username + '\');');
+        userButton.textContent = event.username + ' ';
+        userButton.style = 'color: ' + event.colorCode + ';';
+        userButton.setAttribute("onclick", 'toggleDirectMessageUser(\'' + event.username + '\');');
         // th:onclick="'toggleDirectMessageUser(\'' + ${user.name} + '\')'"
         // toggleDirectMessageUser(this.getAttribute('data1'));
 
         allActiveUsersDiv.append(userButton);
-    } else if (message.type === "USER_LOGGED_OUT") {
+    } else if (event.type === "LOGGED_OUT") {
         let allChildren = allActiveUsersDiv[0].children;
         for (let i = 0; i < allChildren.length; i++) {
             let child = allChildren[i];
-            if (child.textContent.trim() === message.username) {
+            if (child.textContent.trim() === event.username) {
                 allActiveUsersDiv[0].removeChild(child);
             }
         }
