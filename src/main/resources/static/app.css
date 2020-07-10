@@ -94,8 +94,11 @@ body,html{
     padding: 5px 10px;
     margin-bottom: 15px !important;
 }
-.active{
+.no-active{
     background-color: rgba(0,0,0,0.7);
+}
+.active{
+    background-color: rgba(66,103,178,0.7);
 }
 .user_img{
     height: 70px;

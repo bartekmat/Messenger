@@ -1,6 +1,7 @@
 package com.gruzini.messenger.services;
 
 import com.gruzini.messenger.controllers.PresenceController;
+import com.gruzini.messenger.models.LogoService;
 import com.gruzini.messenger.models.MyPrincipal;
 import com.gruzini.messenger.models.User;
 import lombok.extern.slf4j.Slf4j;
@@ -19,24 +20,29 @@ public class PresenceService {
 
     private final UsernameService usernameService;
     private final PresenceController presenceController;
+    private final LogoService logoService;
 
-    public PresenceService(UsernameService usernameService, PresenceController presenceController) {
+    public PresenceService(UsernameService usernameService, PresenceController presenceController, LogoService logoService) {
         this.usernameService = usernameService;
         this.presenceController = presenceController;
+        this.logoService = logoService;
     }
 
     private Map<String, User> activeUsers = new HashMap<>();
 
     public void userLoggedIn(final Principal principal) throws InterruptedException {
         String generatedUsername = null;
+        String avatarUrl = null;
         if (principal instanceof MyPrincipal) {
             generatedUsername = usernameService.generateUsername();
+            avatarUrl = logoService.getLogoLink(generatedUsername);
         } else if (principal instanceof OAuth2AuthenticationToken) {
             OAuth2User user = ((OAuth2AuthenticationToken) principal).getPrincipal();
             generatedUsername = user.getAttribute("name");
+            avatarUrl = user.getAttribute("avatar_url");
         }
 
-        final User addedUser = new User(generatedUsername, principal.getName());
+        final User addedUser = new User(generatedUsername, principal.getName(), avatarUrl);
         activeUsers.put(principal.getName(), addedUser);
         presenceController.publishLoginInfo(addedUser);
     }

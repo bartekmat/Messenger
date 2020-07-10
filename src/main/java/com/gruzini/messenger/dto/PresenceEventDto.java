@@ -15,5 +15,6 @@ public class PresenceEventDto {
 
     private String username;
     private String colorCode;
+    private String logoLink;
     private PresenceEventType type;
 }

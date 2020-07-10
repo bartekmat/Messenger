@@ -52,7 +52,7 @@ function showNewMessage(message) {
     timestampSpan.textContent = message.createdAt + ' ';
 
     let senderSpan = document.createElement('span');
-    senderSpan.textContent = message.sender.name + ' ';
+    senderSpan.textContent = message.sender.username + ' ';
     senderSpan.style = 'color: ' + message.sender.colorCode + ';';
 
     let arrowSpan = null;
@@ -62,7 +62,7 @@ function showNewMessage(message) {
         arrowSpan.textContent = '➡';
 
         recipientSpan = document.createElement('span');
-        recipientSpan.textContent = ' ' + message.recipient.name + ' ';
+        recipientSpan.textContent = ' ' + message.recipient.username + ' ';
         recipientSpan.style = 'color: ' + message.recipient.colorCode + ';';
     }
     let textSpan = null;
@@ -106,14 +106,51 @@ function handleUsersActivity(event) {
     let allActiveUsersDiv = $("#allActiveUsersDiv");
     if (event.type === 'LOGGED_IN') {
         console.log('should append');
-        let userButton = document.createElement('button');
-        userButton.textContent = event.username + ' ';
-        userButton.style = 'color: ' + event.colorCode + ';';
-        userButton.setAttribute("onclick", 'toggleDirectMessageUser(\'' + event.username + '\');');
+
         // th:onclick="'toggleDirectMessageUser(\'' + ${user.name} + '\')'"
         // toggleDirectMessageUser(this.getAttribute('data1'));
 
-        allActiveUsersDiv.append(userButton);
+        let li = document.createElement('li');
+        li.classList.add('no-active');
+        li.setAttribute("onclick", 'toggleDirectMessageUser(\'' + event.username + '\');');
+
+        let flexDiv = document.createElement('div');
+        flexDiv.classList.add('d-flex');
+        flexDiv.classList.add('bd-highlight');
+
+        let imgDiv = document.createElement('div');
+        imgDiv.classList.add('img_cont');
+
+        let img = document.createElement('img');
+        img.src = event.logoLink;
+        img.classList.add('rounded-circle');
+        img.classList.add('user_img');
+
+        let iconSpan = document.createElement('span');
+        iconSpan.classList.add('online_icon');
+
+        let userInfoDiv = document.createElement('div');
+        userInfoDiv.classList.add('user_info');
+
+        let usernameSpan = document.createElement('span');
+        usernameSpan.textContent = event.username;
+
+        let p = document.createElement('p');
+        p.textContent = 'is online';
+
+        imgDiv.appendChild(img);
+        imgDiv.appendChild(iconSpan);
+
+        userInfoDiv.appendChild(usernameSpan);
+        userInfoDiv.appendChild(p);
+
+        flexDiv.appendChild(imgDiv);
+        flexDiv.appendChild(userInfoDiv);
+
+        li.appendChild(flexDiv);
+
+        allActiveUsersDiv.append(li);
+
     } else if (event.type === "LOGGED_OUT") {
         let allChildren = allActiveUsersDiv[0].children;
         for (let i = 0; i < allChildren.length; i++) {
@@ -129,24 +166,24 @@ let directMessagesRecipient = null;
 
 function toggleDirectMessageUser(username) {
     console.log("Clicked toggleDirectMessageUser for user ", username);
-    let allActiveUsersDiv = $("#allActiveUsersDiv");
-    let allChildren = allActiveUsersDiv[0].children;
+    let allActiveUsersDiv = document.getElementById('allActiveUsersDiv');
+    let allChildren = allActiveUsersDiv.childNodes;
     let buttonClicked = null;
     for (let i = 0; i < allChildren.length; i++) {
         let child = allChildren[i];
-        if (child.textContent.trim() === username) {
+        console.log('child text '+child.textContent.trim())
+        if (child.textContent.startsWith(username)) {
+            console.log('true child text '+child.textContent.trim())
             buttonClicked = child;
         }
     }
 
     if (directMessagesRecipient == null) {
         directMessagesRecipient = username;
-        buttonClicked.style.backgroundColor = 'red';
-        buttonClicked.style.textDecoration = 'underline';
+        buttonClicked.className = "active";
     } else if (directMessagesRecipient === username) {
         directMessagesRecipient = null;
-        buttonClicked.style.backgroundColor = '';
-        buttonClicked.style.textDecoration = '';
+        buttonClicked.className = "no-active";
     }
 }
 

@@ -13,7 +13,7 @@ public class UsernameService {
     private static List<String> availableNames = new LinkedList<>();
     private static int lastGeneratedIndex = 0;
 
-    private static String[] names = {"Dog", "Cat", "Mouse", "Dolphin", "Fox", "Elephant", "Snail", "Snake", "Parrot", "Bear", "Rabbit", "Eel", "Elk", "Fish", "Bat"};
+    private static String[] names = {"Dog", "Cat", "Mouse", "Dolphin", "Fox", "Elephant", "Snail", "Snake", "Parrot", "Bear", "Rabbit", "Eel", "Elk", "Fish"};
     private String username = null;
 
 
