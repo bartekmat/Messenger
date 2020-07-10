@@ -20,9 +20,10 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @MessageMapping("/publishMessage")
+    @MessageMapping("/publishPublicMessage")
     @SendTo("/topic/allMessages")
     public Message publishMessage(@Payload SendMessageDto messageDto, Principal principal) {
+        System.out.println("principal = " + principal.getName());
         return messageService.postPublicMessage(messageDto, principal.getName());
     }
 

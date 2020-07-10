@@ -9,11 +9,12 @@ function connect() {
             console.log('new public message')
             showNewMessage(JSON.parse(msg.body));
         });
-        stompClient.subscribe('/topic/allLogins', function (msg) {
+        stompClient.subscribe('/topic/allLogins', function (event) {
             console.log('new login')
-            handleUsersActivity(JSON.parse(msg.body));
+            handleUsersActivity(JSON.parse(event.body));
         });
         stompClient.subscribe('/user/topic/privateMessages', function (msg) {
+            console.log('new private message')
             showNewMessage(JSON.parse(msg.body));
         });
     });
@@ -103,7 +104,7 @@ function showNewMessage(message) {
 
 function handleUsersActivity(event) {
     let allActiveUsersDiv = $("#allActiveUsersDiv");
-    if (true) {
+    if (event.type === 'LOGGED_IN') {
         console.log('should append');
         let userButton = document.createElement('button');
         userButton.textContent = event.username + ' ';
