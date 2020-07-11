@@ -1,6 +1,9 @@
 var stompClient = null;
 
 function connect() {
+    getActiveUsers();
+    getMessageHistory();
+    
     var socket = new SockJS('/websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
@@ -18,6 +21,32 @@ function connect() {
             showNewMessage(JSON.parse(msg.body));
         });
     });
+}
+
+function getActiveUsers() {
+    let request = new XMLHttpRequest();
+    request.open('GET', '/allActiveUsers', false);  // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        let users = JSON.parse(request.responseText);
+        users.forEach(function (user){
+            user.type = 'LOGGED_IN';
+            handleUsersActivity(user);
+        });
+    }
+}
+function getMessageHistory() {
+    let request = new XMLHttpRequest();
+    request.open('GET', '/allPublicMessages', false);  // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        let messages = JSON.parse(request.responseText);
+        messages.forEach(function (message) {
+            showNewMessage(message);
+        });
+    }
 }
 
 function disconnect() {
@@ -49,7 +78,8 @@ function sendMessage() {
 function showNewMessage(message) {
     let div = document.createElement('div');
     let timestampSpan = document.createElement('span');
-    timestampSpan.textContent = message.createdAt + ' ';
+    timestampSpan.textContent = message.createdAt + ' - ';
+    timestampSpan.style = 'color: rgb(149,149,149)';
 
     let senderSpan = document.createElement('span');
     senderSpan.textContent = message.sender.username + ' ';
@@ -60,18 +90,22 @@ function showNewMessage(message) {
     if (message.recipient != null) {
         arrowSpan = document.createElement('span');
         arrowSpan.textContent = '➡';
+        arrowSpan.style = 'color: white';
 
         recipientSpan = document.createElement('span');
-        recipientSpan.textContent = ' ' + message.recipient.username + ' ';
+        recipientSpan.textContent = ' ' + message.recipient.username + '  ';
         recipientSpan.style = 'color: ' + message.recipient.colorCode + ';';
     }
     let textSpan = null;
-    let video = null;
+    let videoDiv = null;
     if (message.type === "TEXT") {
-        textSpan = document.createElement('span');
+        textSpan = document.createElement('p');
         textSpan.textContent = message.content;
+        textSpan.style = 'color: white';
+
     } else if (message.type === "GIF") {
-        video = document.createElement('video');
+        videoDiv = document.createElement('div');
+        let video = document.createElement('video');
         video.autoplay = true;
         video.loop = true;
         video.muted = true;
@@ -79,6 +113,7 @@ function showNewMessage(message) {
         source.src = message.content;
         source.type = "video/mp4";
         video.appendChild(source);
+        videoDiv.appendChild(video);
     }
 
     div.appendChild(timestampSpan);
@@ -90,8 +125,8 @@ function showNewMessage(message) {
     if (textSpan != null) {
         div.appendChild(textSpan);
     }
-    if (video != null) {
-        div.appendChild(video);
+    if (videoDiv != null) {
+        div.appendChild(videoDiv);
     }
 
     let allMessagesDiv = $("#allMessagesDiv");
@@ -152,11 +187,14 @@ function handleUsersActivity(event) {
         allActiveUsersDiv.append(li);
 
     } else if (event.type === "LOGGED_OUT") {
+        console.log('should remove');
+        console.log(event);
         let allChildren = allActiveUsersDiv[0].children;
         for (let i = 0; i < allChildren.length; i++) {
             let child = allChildren[i];
-            if (child.textContent.trim() === event.username) {
+            if (child.textContent.startsWith(event.username)) {
                 allActiveUsersDiv[0].removeChild(child);
+                directMessagesRecipient = null;
             }
         }
     }

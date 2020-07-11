@@ -24,23 +24,22 @@
         <div class="col-md-4 col-xl-3 chat"><div class="card mb-sm-3 mb-md-0 contacts_card">
             <div class="card-header">
                 <span style="color: white">Welcome to SDA Messenger</span>
-                <span style="color: white" th:text="' ' + ${principalName}"></span>
             </div>
             <div class="card-body contacts_body">
                 <ui class="contacts">
                     <div id="allActiveUsersDiv">
-                        <li th:each="user : ${activeUsers}" class="no-active">
-                            <div class="d-flex bd-highlight">
-                                <div class="img_cont">
-                                    <img th:src = "${user.logoLink}" class="rounded-circle user_img">
-                                    <span class="online_icon"></span>
-                                </div>
-                                <div class="user_info">
-                                    <span th:text="${user.username}"></span>
-                                    <p>is online</p>
-                                </div>
-                            </div>
-                        </li>
+<!--                        <li th:each="user : ${activeUsers}" th:data1="${user.username}" class="no-active" onclick="toggleDirectMessageUser(this.getAttribute('data1'));">-->
+<!--                            <div class="d-flex bd-highlight">-->
+<!--                                <div class="img_cont">-->
+<!--                                    <img th:src = "${user.logoLink}" class="rounded-circle user_img">-->
+<!--                                    <span class="online_icon"></span>-->
+<!--                                </div>-->
+<!--                                <div class="user_info">-->
+<!--                                    <span th:text="${user.username}"></span>-->
+<!--                                    <p>is online</p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </li>-->
                     </div>
                 </ui>
             </div>
@@ -51,8 +50,7 @@
                 <div class="card-header msg_head">
                     <div class="d-flex bd-highlight">
                         <div class="img_cont">
-                            <img src="https://cdn0.iconfinder.com/data/icons/black-cat-emoticon-filled/64/cute_cat_kitten_face_per_avatar-03-512.png" class="rounded-circle user_img">
-                            <span class="online_icon"></span>
+                            <img src="https://image.flaticon.com/icons/svg/1653/1653630.svg" class="rounded-circle user_img">
                         </div>
                         <div class="user_info">
                             <span>Chat</span>
@@ -65,27 +63,23 @@
                     </div>
                 </div>
                 <div class="card-body msg_card_body">
-                    <div class="d-flex justify-content-end mb-4">
-                        <div class="msg_cotainer_send">
-                            Mrrrr
-                            <span class="msg_time_send">8:55 AM, Today</span>
-                        </div>
-                        <div class="img_cont_msg">
-                            <img src="https://cdn0.iconfinder.com/data/icons/black-cat-emoticon-filled/64/cute_cat_kitten_face_per_avatar-03-512.png" class="rounded-circle user_img_msg">
-                        </div>
-                    </div>
+<!--                    <div class="d-flex justify-content-end mb-4">-->
+<!--                        <div class="msg_cotainer_send">-->
+<!--                            Mrrrr-->
+<!--                            <span class="msg_time_send">8:55 AM, Today</span>-->
+<!--                        </div>-->
+<!--                        <div class="img_cont_msg">-->
+<!--                            <img src="https://cdn0.iconfinder.com/data/icons/black-cat-emoticon-filled/64/cute_cat_kitten_face_per_avatar-03-512.png" class="rounded-circle user_img_msg">-->
+<!--                        </div>-->
+<!--                    </div>-->
 
                     <div id="allMessagesDiv" style="width: 840px; height: fit-content">
                         <div th:each="message : ${allMessages}">
-                            <div class="d-flex justify-content-start mb-4">
-                                <div class="img_cont_msg">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQy0gcXavtE10AMBb1o_J_fIR0npuwuwVgJHg&usqp=CAU" class="rounded-circle user_img_msg">
-                                </div>
-                                <div class="msg_cotainer">
-                                    <div th:text="${message.content}"></div>
-                                    <span class="msg_time" th:text="${message.createdAt}">8:57 AM, Today</span>
-                                </div>
-                            </div>
+                            <span th:text="${message.createdAt}" style="color: rgb(149,149,149)"></span>
+                            <span th:text="${message.sender.username}+' '" th:style="'color:' + ${message.sender.colorCode}"></span>
+                            <span style="color: white">&#10145</span>
+                            <span th:text="' ' + ${message.recipient.username}" th:style="'color:' + ${message.recipient.colorCode}"></span>
+                            <p th:text="${message.content}" style="color: white"></p>
                         </div>
 <!--                        <div  th:each="message : ${allMessages}">-->
 <!--                            <span th:text="' '+${message.getCreatedAt()}"></span>-->

@@ -21,10 +21,12 @@ public class MessageService {
     private final List<Message> allMessages = new ArrayList<>();
     private final PresenceService presenceService;
     private final PrivateOutboundMessageController privateOutboundMessageController;
+    private final GifService gifService;
 
-    public MessageService(PresenceService presenceService, PrivateOutboundMessageController privateOutboundMessageController) {
+    public MessageService(PresenceService presenceService, PrivateOutboundMessageController privateOutboundMessageController, GifService gifService) {
         this.presenceService = presenceService;
         this.privateOutboundMessageController = privateOutboundMessageController;
+        this.gifService = gifService;
     }
 
     public Message postPublicMessage(final SendMessageDto messageDto, final String principalName) {
@@ -49,8 +51,13 @@ public class MessageService {
                 : null;
         log.info("Received message " + messageDto.getContent() + " from " + sender.getUsername() + " to " + (recipient == null ? "all" : recipient.getUsername()));
 
-        final String content = messageDto.getContent();
+        String content = messageDto.getContent();
         MessageType messageType = MessageType.TEXT;
+
+        if (gifService.isGifMessage(content)){
+            content = gifService.prepareGifMessageText(content);
+            messageType = MessageType.GIF;
+        }
 
         return Message.builder()
                 .content(content)

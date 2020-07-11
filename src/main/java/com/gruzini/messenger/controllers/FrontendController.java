@@ -15,11 +15,9 @@ import java.security.Principal;
 public class FrontendController {
 
     private final MessageService messageService;
-    private final PresenceService presenceService;
 
-    public FrontendController(MessageService messageService, PresenceService presenceService) {
+    public FrontendController(MessageService messageService) {
         this.messageService = messageService;
-        this.presenceService = presenceService;
     }
     @GetMapping("/")
     public String index(final Model model, Principal principal){
@@ -28,10 +26,7 @@ public class FrontendController {
     }
 
     @GetMapping("/chat")
-    public String showChat(final Model model, final Principal principal) {
-        model.addAttribute("principalName", principal == null ? "anonymous" : principal.getName());
-        model.addAttribute("allMessages", messageService.readAllPublicMessages());
-        model.addAttribute("activeUsers", presenceService.getAllActiveUsers());
+    public String showChat() {
         return "chat";
     }
 }
